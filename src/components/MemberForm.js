@@ -7,7 +7,6 @@ import * as Yup from 'yup';
 import { createMember, getMemberById, updateMember } from '../services/api';
 import { getPhotoUrl } from '../utils/photoUrl';
 
-
 const MemberForm = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -15,7 +14,7 @@ const MemberForm = () => {
   const { id } = useParams();
   const isEdit = Boolean(id);
 
-  const [initialValues, setInitialValues] = useState({
+  const defaultValues = {
     name: '',
     address: '',
     dob: '',
@@ -32,7 +31,9 @@ const MemberForm = () => {
     mobileNumber: '',
     emergencyContactNumber: '',
     photo: null
-  });
+  };
+
+  const [initialValues, setInitialValues] = useState(defaultValues);
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -52,12 +53,13 @@ const MemberForm = () => {
       try {
         const member = await getMemberById(id);
         const formatted = {
+          ...defaultValues,
           ...member,
           dob: formatDate(member.dob),
           membershipStartDate: formatDate(member.membershipStartDate),
           membershipEndDate: formatDate(member.membershipEndDate),
-          bodyMeasurements: { ...initialValues.bodyMeasurements, ...member.bodyMeasurements },
-          photo: member.photo || null
+          bodyMeasurements: { ...defaultValues.bodyMeasurements, ...member.bodyMeasurements },
+          photo: member.photo ?? null
         };
         setInitialValues(formatted);
       } catch {
