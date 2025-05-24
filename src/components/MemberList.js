@@ -36,7 +36,7 @@ const MembersList = () => {
     if (confirmDelete === id) {
       try {
         await deleteMember(id);
-        setMembers(members.filter(member => member._id !== id));
+        setMembers(members.filter((m) => m._id !== id));
         setSuccess('Member deleted successfully');
         setConfirmDelete(null);
         setTimeout(() => setSuccess(''), 2000);
@@ -56,7 +56,7 @@ const MembersList = () => {
     return isNaN(date.getTime()) ? 'N/A' : date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
-  const filteredMembers = members.filter(member =>
+  const filteredMembers = members.filter((member) =>
     member.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     member.mobileNumber?.includes(searchTerm)
   );
@@ -71,7 +71,8 @@ const MembersList = () => {
       </div>
 
       {(error || success) && (
-        <div
+        <Alert
+          variant={success ? 'success' : 'danger'}
           style={{
             position: 'fixed',
             top: '40%',
@@ -82,10 +83,8 @@ const MembersList = () => {
             textAlign: 'center'
           }}
         >
-          <Alert variant={success ? 'success' : 'danger'}>
-            {success || error}
-          </Alert>
-        </div>
+          {success || error}
+        </Alert>
       )}
 
       <Card className="mb-4">
@@ -134,7 +133,13 @@ const MembersList = () => {
                             src={photoUrl}
                             alt="Profile"
                             title="Click to preview"
-                            style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%', cursor: 'pointer' }}
+                            style={{
+                              width: '40px',
+                              height: '40px',
+                              objectFit: 'cover',
+                              borderRadius: '50%',
+                              cursor: 'pointer',
+                            }}
                             onClick={() => {
                               setPreviewUrl(photoUrl);
                               setShowPreview(true);
@@ -158,11 +163,11 @@ const MembersList = () => {
                               <Button variant="primary" size="sm">Edit</Button>
                             </Link>
                             <Button
-                              variant={confirmDelete === member._id ? "danger" : "outline-danger"}
+                              variant={confirmDelete === member._id ? 'danger' : 'outline-danger'}
                               size="sm"
                               onClick={() => handleDelete(member._id)}
                             >
-                              {confirmDelete === member._id ? "Confirm" : "Delete"}
+                              {confirmDelete === member._id ? 'Confirm' : 'Delete'}
                             </Button>
                           </div>
                         </td>
@@ -176,13 +181,17 @@ const MembersList = () => {
         </Card.Body>
       </Card>
 
-      {/* Modal for Image Preview */}
+      {/* Modal for image preview */}
       <Modal show={showPreview} onHide={() => setShowPreview(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Profile Photo</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <img src={previewUrl} alt="Full Preview" style={{ width: '100%', maxHeight: '600px', objectFit: 'contain' }} />
+          <img
+            src={previewUrl}
+            alt="Preview"
+            style={{ width: '100%', maxHeight: '600px', objectFit: 'contain' }}
+          />
         </Modal.Body>
       </Modal>
     </div>
