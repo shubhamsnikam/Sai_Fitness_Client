@@ -27,11 +27,15 @@ const MemberDetails = () => {
     fetchMember();
   }, [id]);
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? 'N/A' : date.toLocaleDateString();
+  };
+
   if (loading) return <Spinner animation="border" className="mt-5 mx-auto d-block" />;
   if (error) return <Alert variant="danger" className="mt-3">{error}</Alert>;
   if (!member) return null;
-
-  const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
 
   return (
     <div className="page-content" style={{ paddingTop: '70px', maxWidth: '960px', margin: 'auto' }}>
@@ -53,22 +57,22 @@ const MemberDetails = () => {
               <Row>
                 <Col md={6}>
                   <ListGroup variant="flush">
-                    <ListGroup.Item><strong>Name:</strong> {member.name}</ListGroup.Item>
+                    <ListGroup.Item><strong>Name:</strong> {member.name || 'N/A'}</ListGroup.Item>
                     <ListGroup.Item><strong>Date of Birth:</strong> {formatDate(member.dob)}</ListGroup.Item>
-                    <ListGroup.Item><strong>Address:</strong> {member.address}</ListGroup.Item>
-                    <ListGroup.Item><strong>Mobile:</strong> {member.mobileNumber}</ListGroup.Item>
-                    <ListGroup.Item><strong>Emergency Contact:</strong> {member.emergencyContactNumber}</ListGroup.Item>
-                    <ListGroup.Item><strong>Health Conditions:</strong> {member.healthConditions ?? 'N/A'}</ListGroup.Item>
+                    <ListGroup.Item><strong>Address:</strong> {member.address || 'N/A'}</ListGroup.Item>
+                    <ListGroup.Item><strong>Mobile:</strong> {member.mobileNumber || 'N/A'}</ListGroup.Item>
+                    <ListGroup.Item><strong>Emergency Contact:</strong> {member.emergencyContactNumber || 'N/A'}</ListGroup.Item>
+                    <ListGroup.Item><strong>Health Conditions:</strong> {member.healthConditions || 'N/A'}</ListGroup.Item>
                   </ListGroup>
                 </Col>
                 <Col md={6}>
                   <ListGroup variant="flush">
                     <ListGroup.Item><strong>Membership Start:</strong> {formatDate(member.membershipStartDate)}</ListGroup.Item>
-                    <ListGroup.Item><strong>Duration (months):</strong> {member.membershipDuration}</ListGroup.Item>
+                    <ListGroup.Item><strong>Duration (months):</strong> {member.membershipDuration || 'N/A'}</ListGroup.Item>
                     <ListGroup.Item><strong>End Date:</strong> {formatDate(member.membershipEndDate)}</ListGroup.Item>
-                    <ListGroup.Item><strong>Paid Fee:</strong> ₹{member.paidFee}</ListGroup.Item>
-                    <ListGroup.Item><strong>Pending Fee:</strong> ₹{member.pendingFee}</ListGroup.Item>
-                    <ListGroup.Item><strong>Workout Plan:</strong> {member.workoutPlan ?? 'N/A'}</ListGroup.Item>
+                    <ListGroup.Item><strong>Paid Fee:</strong> ₹{member.paidFee ?? '0'}</ListGroup.Item>
+                    <ListGroup.Item><strong>Pending Fee:</strong> ₹{member.pendingFee ?? '0'}</ListGroup.Item>
+                    <ListGroup.Item><strong>Workout Plan:</strong> {member.workoutPlan || 'N/A'}</ListGroup.Item>
                   </ListGroup>
                 </Col>
               </Row>
@@ -79,16 +83,16 @@ const MemberDetails = () => {
 
           <Row>
             <Col md={6}>
-              <h5>Body Weight= {member.bodyWeight} kg </h5>
+              <h5>Body Weight: {member.bodyWeight ?? 'N/A'} kg</h5>
             </Col>
             <Col md={6}>
               <h5>Body Measurements</h5>
               <ListGroup variant="flush">
-                <ListGroup.Item><strong>Chest:</strong> {member.bodyMeasurements?.chest} cm</ListGroup.Item>
-                <ListGroup.Item><strong>Waist:</strong> {member.bodyMeasurements?.waist} cm</ListGroup.Item>
-                <ListGroup.Item><strong>Hips:</strong> {member.bodyMeasurements?.hips} cm</ListGroup.Item>
-                <ListGroup.Item><strong>Abs:</strong> {member.bodyMeasurements?.abs} cm</ListGroup.Item>
-                <ListGroup.Item><strong>Arms:</strong> {member.bodyMeasurements?.arms} cm</ListGroup.Item>
+                <ListGroup.Item><strong>Chest:</strong> {member.bodyMeasurements?.chest ?? 'N/A'} cm</ListGroup.Item>
+                <ListGroup.Item><strong>Waist:</strong> {member.bodyMeasurements?.waist ?? 'N/A'} cm</ListGroup.Item>
+                <ListGroup.Item><strong>Hips:</strong> {member.bodyMeasurements?.hips ?? 'N/A'} cm</ListGroup.Item>
+                <ListGroup.Item><strong>Abs:</strong> {member.bodyMeasurements?.abs ?? 'N/A'} cm</ListGroup.Item>
+                <ListGroup.Item><strong>Arms:</strong> {member.bodyMeasurements?.arms ?? 'N/A'} cm</ListGroup.Item>
               </ListGroup>
             </Col>
           </Row>
