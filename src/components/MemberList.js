@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Card, Alert, Form, InputGroup } from 'react-bootstrap';
+import { Table, Button, Card, Alert, Form, InputGroup, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getMembers, deleteMember } from '../services/api';
 import { getPhotoUrl } from '../utils/photoUrl';
-
 
 const MembersList = () => {
   const [members, setMembers] = useState([]);
@@ -12,6 +11,8 @@ const MembersList = () => {
   const [success, setSuccess] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     fetchMembers();
@@ -38,7 +39,6 @@ const MembersList = () => {
         setMembers(members.filter(member => member._id !== id));
         setSuccess('Member deleted successfully');
         setConfirmDelete(null);
-
         setTimeout(() => setSuccess(''), 2000);
       } catch (err) {
         setError('Failed to delete member');
@@ -51,13 +51,14 @@ const MembersList = () => {
   };
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? 'N/A' : date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
   const filteredMembers = members.filter(member =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.mobileNumber.includes(searchTerm)
+    member.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.mobileNumber?.includes(searchTerm)
   );
 
   return (
@@ -69,7 +70,6 @@ const MembersList = () => {
         </Link>
       </div>
 
-      {/* Floating success/error box */}
       {(error || success) && (
         <div
           style={{
@@ -122,21 +122,26 @@ const MembersList = () => {
                     <th>Actions</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {filteredMembers.map((member) => {
                     const isExpired = new Date(member.membershipEndDate) < new Date();
+                    const photoUrl = getPhotoUrl(member.photo);
+
                     return (
                       <tr key={member._id}>
                         <td>
                           <img
-                            src={getPhotoUrl(member.photo)}
+                            src={photoUrl}
                             alt="Profile"
-                            style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}
+                            title="Click to preview"
+                            style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%', cursor: 'pointer' }}
+                            onClick={() => {
+                              setPreviewUrl(photoUrl);
+                              setShowPreview(true);
+                            }}
                           />
                         </td>
                         <td>{member.name}</td>
-
                         <td>{member.mobileNumber}</td>
                         <td>{formatDate(member.membershipEndDate)}</td>
                         <td>
@@ -170,9 +175,18 @@ const MembersList = () => {
           )}
         </Card.Body>
       </Card>
+
+      {/* Modal for Image Preview */}
+      <Modal show={showPreview} onHide={() => setShowPreview(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Profile Photo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          <img src={previewUrl} alt="Full Preview" style={{ width: '100%', maxHeight: '600px', objectFit: 'contain' }} />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
 
 export default MembersList;
-
