@@ -1,3 +1,4 @@
+// Replace this with your real backend URL from Render
 const BASE_URL = 'https://sai-fitness-server.onrender.com';
 
 export const getPhotoUrl = (filename) => {
