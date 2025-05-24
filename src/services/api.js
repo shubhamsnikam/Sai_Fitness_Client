@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 // Backend base URL
-// const REACT_APP_BACKEND_URL = 'https://gym-server-k6k4.onrender.com/api';
+const REACT_APP_BACKEND_URL = 'https://sai-fitness-server.onrender.com';
 
+// Set base URL globally for axios
+axios.defaults.baseURL = REACT_APP_BACKEND_URL;
 
 // Member API calls
 export const getMembers = async () => {
@@ -44,8 +46,8 @@ export const updateMember = async (id, memberData) => {
   try {
     const response = await axios.put(`/api/members/${id}`, memberData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      },
     });
     return response.data;
   } catch (error) {
